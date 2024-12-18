@@ -7,7 +7,7 @@ a_coords = [1, 9]
 b_coords = [17, 9]
 a_name = "A"
 b_name = "B"
-a_walls = 0
+a_walls = 11
 b_walls = 11
 
 empty = "#"
