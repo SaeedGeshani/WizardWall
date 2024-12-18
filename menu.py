@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import SaveandDisplayData
 
 def check_email(email):
     """Check if the email is valid using regex."""
@@ -10,22 +11,22 @@ def check_email(email):
 def load_user_data(username):
     """Load user data from a JSON file."""
     try:
-        with open(f"{username}.json", "r") as file:
+        with open(f"UserInformation/{username}.json", "r") as file:
             return json.load(file)
     except FileNotFoundError:
         return None
 
 def save_user_data(username, data):
     """Save user data to a JSON file."""
-    with open(f"{username}.json", "w") as file:
+    with open(f"UserInformation/{username}.json", "w") as file:
         json.dump(data, file, indent=4)
 
 def sign_up():
     """Sign up a new user."""
-    os.system("clear")
+    os.system("cls")
     print("\n=== Sign Up ===")
     username = input("Enter a username: ").strip()
-    if os.path.exists(f"{username}.json"):
+    if os.path.exists(f"UserInformation/{username}.json"):
         print("Username already exists. Please log in.")
         return None
 
@@ -55,7 +56,7 @@ def sign_up():
 
 def log_in():
     """Log in an existing user."""
-    os.system("clear")
+    os.system("cls")
     print("\n=== Log In ===")
     username = input("Enter your username: ").strip()
     user_data = load_user_data(username)
@@ -75,7 +76,7 @@ def log_in():
 
 def get_second_player(first_player):
     """Get the second player's information and ensure they exist or sign them up."""
-    os.system("clear")
+    os.system("cls")
     print("\n=== Select Opponent ===")
     while True:
         username = input("Enter the opponent's username: ").strip()
@@ -120,7 +121,7 @@ def get_second_player(first_player):
 
 def create_game_history_file(player1, player2):
     """Create a game history file for the match."""
-    os.system("clear")
+    os.system("cls")
     folder_name = "game_history"
     os.makedirs(folder_name, exist_ok=True)
 
@@ -139,7 +140,7 @@ def create_game_history_file(player1, player2):
 
 def new_game(first_player):
     """Initiate a new game by selecting an opponent."""
-    os.system("clear")
+    os.system("cls")
     first_player_data = load_user_data(first_player)
     if not first_player_data:
         print("First player data could not be loaded. Please try again.")
@@ -158,7 +159,7 @@ def new_game(first_player):
 
 def view_game_history():
     """View the history of all games played."""
-    os.system("clear")
+    os.system("cls")
     folder_name = "game_history"
     if not os.path.exists(folder_name):
         print("No matches have been played yet.")
@@ -189,7 +190,7 @@ def view_game_history():
 
 def view_leaderboard():
     """View the leaderboard."""
-    os.system("clear")
+    os.system("cls")
     print("\n=== Leaderboard ===")
     json_files = [f for f in os.listdir('.') if f.endswith('.json')]
     players = []
@@ -216,15 +217,54 @@ def view_leaderboard():
         print(f"{rank:<4} | {player['username']:<14} | {player['total_wins']:<4} | {player['play_time']:<9} | {player['total_losses']:<6}")
     input("Press any key to move forward...")
 
+def loadSection(username):
+    dic = {'names' : []}
+    path = f"Games/UniqueNames.json"
+    if os.path.exists(path):
+        with open(path, 'r') as file:
+            dic = json.load(path)
+    if username in dic["names"]:
+        dic = {'names' : []}
+        path = f"Games/{username}/opponents.json"
+        if os.path.exists(path):
+            with open(path, 'r') as file:
+                dic = json.load(file)
+        
+        if len(dic['names']) == 0:
+            print("You don't have any saved game")
+        else:
+            for name in dic['names']:
+                print(name)
+            oponame = input("Enter your opponent's name: ").strip()
+            path = f"Games/{username}/{oponame}/allGames.json"
+            dic = {'games' : []}
+            if os.path.exists(path):
+                with open(path, 'r') as file:
+                    dic = json.load(file)
+            
+            for i, gameName in enumerate(dic['games']):
+                print(f"{i}.{gameName}")
+            
+            gameID = input("Enter ID of your game: ").strip()
+
+            path = f"Games/{username}/{oponame}/{gameID}.json"
+            
+            Table , data = SaveandDisplayData.loadGameData(path)
+
+            #************************************************ PASS THIS TO SALEH's LOGIC FUNCTION***********************************************************************************************************************************************************
+
+
+
 def main_menu(username):
     """Display the main menu after login or signup."""
     while True:
-        os.system("clear")
+        os.system("cls")
         print("\n=== Main Menu ===")
         print("1. New Game")
         print("2. View Leaderboard")
         print("3. View Game History")
-        print("4. Exit")
+        print("4.Load a game")
+        print("5. Exit")
         choice = input("Choose an option: ").strip()
 
         if choice == "1":
@@ -233,7 +273,9 @@ def main_menu(username):
             view_leaderboard()
         elif choice == "3":
             view_game_history()
-        elif choice == "4":
+        elif choice == '4':
+            loadSection()
+        elif choice == "5":
             print("Exiting the program. Goodbye!")
             return
         else:
@@ -243,7 +285,7 @@ def main():
     """Main function to run the program."""
     print("Welcome to Coridor!")
     while True:
-        os.system("clear")
+        os.system("cls")
         print("\n1. Sign Up")
         print("2. Log In")
         print("3. Exit")

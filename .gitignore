@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 Games/*
 !Games/UniqueName.json
+UserInformation/*
+game_history/*
