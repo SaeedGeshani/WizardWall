@@ -22,6 +22,7 @@ def save_user_data(username, data):
 
 def sign_up():
     """Sign up a new user."""
+    os.system("clear")
     print("\n=== Sign Up ===")
     username = input("Enter a username: ").strip()
     if os.path.exists(f"{username}.json"):
@@ -54,6 +55,7 @@ def sign_up():
 
 def log_in():
     """Log in an existing user."""
+    os.system("clear")
     print("\n=== Log In ===")
     username = input("Enter your username: ").strip()
     user_data = load_user_data(username)
@@ -73,6 +75,7 @@ def log_in():
 
 def get_second_player(first_player):
     """Get the second player's information and ensure they exist or sign them up."""
+    os.system("clear")
     print("\n=== Select Opponent ===")
     while True:
         username = input("Enter the opponent's username: ").strip()
@@ -115,8 +118,28 @@ def get_second_player(first_player):
             print(f"Opponent {username} has been successfully signed up.")
             return opponent_data
 
+def create_game_history_file(player1, player2):
+    """Create a game history file for the match."""
+    os.system("clear")
+    folder_name = "game_history"
+    os.makedirs(folder_name, exist_ok=True)
+
+    base_filename = f"{player1}_vs_{player2}"
+    filename = base_filename
+    counter = 1
+    while os.path.exists(os.path.join(folder_name, f"{filename}.json")):
+        filename = f"{base_filename}_match_{counter}"
+        counter += 1
+
+    filepath = os.path.join(folder_name, f"{filename}.json")
+    with open(filepath, "w") as file:
+        json.dump({}, file)
+    print(f"Game history file created: {filepath}")
+    return filepath
+
 def new_game(first_player):
     """Initiate a new game by selecting an opponent."""
+    os.system("clear")
     first_player_data = load_user_data(first_player)
     if not first_player_data:
         print("First player data could not be loaded. Please try again.")
@@ -127,11 +150,46 @@ def new_game(first_player):
     print(f"Player 1: {first_player_data['username']}")
     print(f"Player 2: {second_player_data['username']}")
 
+    # Create game history file
+    create_game_history_file(first_player_data['username'], second_player_data['username'])
+
     # Placeholder for game logic
     return first_player_data, second_player_data
 
+def view_game_history():
+    """View the history of all games played."""
+    os.system("clear")
+    folder_name = "game_history"
+    if not os.path.exists(folder_name):
+        print("No matches have been played yet.")
+        input("Press any key to move forward...")
+        return
+
+    game_files = [f for f in os.listdir(folder_name) if f.endswith('.json')]
+    if not game_files:
+        print("No matches have been played yet.")
+        input("Press any key to move forward...")
+        return
+
+    print("\n=== Game History ===")
+    for index, game_file in enumerate(game_files, start=1):
+        print(f"{index}. {game_file.replace('_', ' ').replace('.json', '')}")
+
+    try:
+        choice = int(input("Select a game to view (by number): "))
+        if 1 <= choice <= len(game_files):
+            selected_file = game_files[choice - 1]
+            print(f"Selected game: {selected_file}")
+            # Placeholder for viewing game content
+        else:
+            print("Invalid selection.")
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+    input("Press any key to move forward...")
+
 def view_leaderboard():
     """View the leaderboard."""
+    os.system("clear")
     print("\n=== Leaderboard ===")
     json_files = [f for f in os.listdir('.') if f.endswith('.json')]
     players = []
@@ -147,6 +205,7 @@ def view_leaderboard():
 
     if not players:
         print("No users found.")
+        input("Press any key to move forward...")
         return
 
     players.sort(key=lambda x: (-x["total_wins"], x["play_time"], x["total_losses"]))
@@ -155,14 +214,17 @@ def view_leaderboard():
     print("--------------------------------------------------")
     for rank, player in enumerate(players, start=1):
         print(f"{rank:<4} | {player['username']:<14} | {player['total_wins']:<4} | {player['play_time']:<9} | {player['total_losses']:<6}")
+    input("Press any key to move forward...")
 
 def main_menu(username):
     """Display the main menu after login or signup."""
     while True:
+        os.system("clear")
         print("\n=== Main Menu ===")
         print("1. New Game")
         print("2. View Leaderboard")
-        print("3. Exit")
+        print("3. View Game History")
+        print("4. Exit")
         choice = input("Choose an option: ").strip()
 
         if choice == "1":
@@ -170,8 +232,10 @@ def main_menu(username):
         elif choice == "2":
             view_leaderboard()
         elif choice == "3":
+            view_game_history()
+        elif choice == "4":
             print("Exiting the program. Goodbye!")
-            return  # Exit the main menu loop
+            return
         else:
             print("Invalid choice. Please try again.")
 
@@ -179,6 +243,7 @@ def main():
     """Main function to run the program."""
     print("Welcome to Coridor!")
     while True:
+        os.system("clear")
         print("\n1. Sign Up")
         print("2. Log In")
         print("3. Exit")
@@ -194,7 +259,7 @@ def main():
                 main_menu(username)
         elif choice == "3":
             print("Goodbye!")
-            return  # Exit the program loop
+            return
         else:
             print("Invalid choice. Please try again.")
 
