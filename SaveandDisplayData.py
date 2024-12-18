@@ -29,8 +29,7 @@ def catchDataForPlayer(name : str) -> dict:
 
     return data
 
-def saveTotalGame(data):
-    
+def makeSureNestesFolderExists(data):
     if not os.path.exists(f"Games/{data["player1_name"]}"):
         os.makedirs(f"Games/{data["player1_name"]}/{data["player2_name"]}")
     elif not os.path.exists(f"Games/{data["player1_name"]}/{data["player2_name"]}"):
@@ -41,6 +40,7 @@ def saveTotalGame(data):
     elif not os.path.exists(f"Games/{data["player2_name"]}/{data["player1_name"]}"):
         os.makedirs(f"Games/{data["player2_name"]}/{data["player1_name"]}")
 
+def fillDatainNestesFolder(data):
     path = f"Games/{data["player1_name"]}/{data["player2_name"]}/{data["Game_ID"]}.json"
     with open(path, 'w') as file:
         json.dump(data, file , indent=4)
@@ -48,6 +48,7 @@ def saveTotalGame(data):
     with open(path, 'w') as file:
         json.dump(data, file , indent=4)
 
+def makeFileOfOpponents(data):
     path = f"Games/{data["player1_name"]}/opponents.json"
     dic = {}
     if os.path.exists(path):
@@ -70,17 +71,66 @@ def saveTotalGame(data):
         dic["opponents"].append(data["player1_name"])
     with open(path, 'w') as file:
         json.dump(dic, file, indent = 4)
-    dic = {}
+
+def updateUniqueNamesInGamesFolder(data):
+    dic = {'names':[]}
     
-    with open("Games/UniqueNames.json" , 'r') as file:
-        dic = json.load(file)
-        if data["player1_name"] not in dic["names"]:
-            dic["names"].append(data["player1_name"])
-        if data["player2_name"] not in dic["names"]:
-            dic["names"].append(data["player2_name"]) 
+    path = "Games/UniqueNames.json"
+
+    if os.path.exists(path):
+        with open(path , 'r') as file:
+            dic = json.load(file)
+
+    if data["player1_name"] not in dic["names"]:
+        dic["names"].append(data["player1_name"])
+    if data["player2_name"] not in dic["names"]:
+        dic["names"].append(data["player2_name"]) 
         
     with open("Games/UniqueNames.json" , 'w') as file:
         json.dump(dic, file, indent = 4)
+
+def updateAllGameBetweenTwoPlayers(data):
+
+    path = f"Games/{data["player1_name"]}/{data["player2_name"]}/allGames.json"
+    dic = {"games" : []}
+
+    if os.path.exists(path):
+        with open(path, 'r') as file:
+            dic = json.load(file)
+    
+    if data["Game_ID"] not in dic["games"]:
+        dic["games"].append(data["Game_ID"])
+    
+    with open(path, 'w') as file:
+        json.dump(dic, file , indent = 4)
+    
+    path = f"Games/{data["player2_name"]}/{data["player1_name"]}/allGames.json"
+    dic = {"games" : []}
+
+    if os.path.exists(path):
+        with open(path, 'r') as file:
+            dic = json.load(file)
+    
+    if data["Game_ID"] not in dic["games"]:
+        dic["games"].append(data["Game_ID"])
+    
+    with open(path, 'w') as file:
+        json.dump(dic, file , indent = 4)
+
+
+    
+
+def saveTotalGame(data):
+    
+    makeSureNestesFolderExists(data)
+
+    fillDatainNestesFolder(data)
+
+    makeFileOfOpponents(data)
+
+    updateUniqueNamesInGamesFolder(data)
+    
+    updateAllGameBetweenTwoPlayers(data)
          
     
 
