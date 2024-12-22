@@ -157,6 +157,8 @@ def loadGameData(fileName : str) -> list[list[list[chr]], dict]:
                     Table[i][j] = "2"
         return [Table, data]
 
+
+
 data ={
     "player1_name": "Saeed",
     "player2_name": "Parham",

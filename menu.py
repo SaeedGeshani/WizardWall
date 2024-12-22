@@ -138,6 +138,51 @@ def create_game_history_file(player1, player2):
     print(f"Game history file created: {filepath}")
     return filepath
 
+def ParhamToSaeed(data1,data2):
+    total_data = {
+    "player1_name": data1['username'],
+    "player2_name": data2['username'],
+    "player1_email": data1['email'],
+    "player2_email": data2['email'],
+    "player1_password" : data1["password"],
+    "player2_password" : data2["password"],
+    "player1_total_wins" : data1['total_wins'],
+    "player2_total_wins" : data2['total_wins'],
+    "player1_total_losses" : data1["total_losses"],
+    "player2_total_losses" : data2["total_losses"],
+    "play_time" : data1['playtime'],
+    "player1_loc" : [],
+    "player2_loc" : [],
+    "number_of_obs1":10,
+    "number_if_obs2":10,
+    "obstacles_loc" : [],
+    "turn" : 0,
+    "game_result_for_player1": None,
+    "end_game_date" : None,
+    "Game_ID" : 1234
+    }
+    return total_data
+
+def SaeedToParham(data):
+    player1_data = {
+        "username": data["player1_name"],
+        "email": data["player1_email"],
+        "password": data["player1_password"],
+        "play_time": data['play_time'],
+        "total_wins": data['player1_total_wins'],
+        "total_losses": data["player1_total_losses"]
+    }
+    player2_data = {
+        "username": data["player2_name"],
+        "email": data["player2_email"],
+        "password": data["player2_password"],
+        "play_time": data['play_time'],
+        "total_wins": data['player2_total_wins'],
+        "total_losses": data["player2_total_losses"]
+    }
+    return [player1_data, player2_data]
+    
+
 def new_game(first_player):
     """Initiate a new game by selecting an opponent."""
     os.system("cls")
@@ -151,11 +196,18 @@ def new_game(first_player):
     print(f"Player 1: {first_player_data['username']}")
     print(f"Player 2: {second_player_data['username']}")
 
+    total_data = ParhamToSaeed(first_player_data, second_player_data)
+    #******
+    # LOGIC
+    #******
+
+    first_player_data, second_player_data = SaeedToParham(total_data)
+
     # Create game history file
     create_game_history_file(first_player_data['username'], second_player_data['username'])
 
     # Placeholder for game logic
-    return first_player_data, second_player_data
+    # return first_player_data, second_player_data
 
 def view_game_history():
     """View the history of all games played."""
@@ -252,7 +304,10 @@ def loadSection(username):
             Table , data = SaveandDisplayData.loadGameData(path)
 
             #************************************************ PASS THIS TO SALEH's LOGIC FUNCTION***********************************************************************************************************************************************************
+            total_data = {}
 
+            first_player_data, second_player_data = SaeedToParham(total_data)
+            create_game_history_file(first_player_data, second_player_data)
 
 
 def main_menu(username):
