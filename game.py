@@ -96,16 +96,12 @@ def print_table():
     for row_idx, row in enumerate(table):
         # Print row index
         if row_idx % 2 != 0:
-            print(row_idx // 2 + 1, end=" ")
+            print(row_idx//2 +1,end=" ")
         else:
             print(end="  ")
-        
-        for cell_idx, cell in enumerate(row):
-            if row_idx == 1 and cell == "#":  # Red background for skipped #
-                print("\033[41m \033[0m", end="")
-            elif row_idx == 17 and cell == "#":  # Blue background for skipped #
-                print("\033[44m \033[0m", end="")
-            elif cell == a_name:  # Player A
+
+        for cell in row:
+            if cell == a_name:  # Player A
                 print(f"\033[34m{cell}\033[0m", end="")  # Blue
             elif cell == b_name:  # Player B
                 print(f"\033[31m{cell}\033[0m", end="")  # Red
@@ -117,7 +113,7 @@ def print_table():
                 print(cell, end="")  # Default
         
         if row_idx % 2 != 0:
-            print(row_idx // 2 + 1, end=" ")
+            print(row_idx//2 +1,end=" ")
         else:
             print(end="  ")
         print()  # Newline after each row
@@ -128,6 +124,8 @@ def print_table():
     print()
     
     print(f"Walls: \033[34m{a_walls}\033[0m        \033[31m{b_walls}\033[0m")
+
+
 
 def move(way) -> bool | None:
     coords = a_coords if turn == 0 else b_coords
@@ -499,7 +497,7 @@ def time_difference(start_time):
 
 def start(data):
     global time_spent
-    # read_data(data)
+    read_data(data)
     if not table:
         initiate_table()
 
@@ -510,6 +508,6 @@ def start(data):
     return generate_info()
     
 
-start([])
+
 
 
