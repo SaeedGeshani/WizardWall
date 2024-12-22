@@ -111,7 +111,17 @@ def print_table():
                 print(f"\033[33m{cell}\033[0m", end="")  # Brown/Yellow
             else:
                 print(cell, end="")  # Default
+        
+        if row_idx % 2 != 0:
+            print(row_idx//2 +1,end=" ")
+        else:
+            print(end="  ")
         print()  # Newline after each row
+    
+    print("   ", end="")
+    for col in range(1, 10):
+        print(col, end=" ")
+    print()
     
     print(f"Walls: \033[34m{a_walls}\033[0m        \033[31m{b_walls}\033[0m")
 
@@ -242,12 +252,12 @@ def add_wall(coords, dir, way) -> bool:
         if way == "up" and coords[0] - 2 >= 0 and table[coords[0] - 2][coords[1] + 1] != "|" and table[coords[0]-1][coords[1]+1] == "+":
             table[coords[0]][coords[1] + 1] = "|"
             table[coords[0] - 2][coords[1] + 1] = "|"
-            table[coords[0]-1][coords[1]+1] = " "
+            table[coords[0]-1][coords[1]+1] = "|"
             return True
         elif way == "down" and coords[0] + 2 < 19 and table[coords[0] + 2][coords[1] + 1] != "|" and table[coords[0]+1][coords[1]+1] == "+":
             table[coords[0]][coords[1] + 1] = "|"
             table[coords[0] + 2][coords[1] + 1] = "|"
-            table[coords[0]+1][coords[1]+1] = " "
+            table[coords[0]+1][coords[1]+1] = "|"
             return True
 
         return False
@@ -259,12 +269,12 @@ def add_wall(coords, dir, way) -> bool:
         if way == "up" and coords[0] - 2 >= 0 and table[coords[0] - 2][coords[1] - 1] != "|" and table[coords[0]-1][coords[1]-1]== "+":
             table[coords[0]][coords[1] - 1] = "|"
             table[coords[0] - 2][coords[1] - 1] = "|"
-            table[coords[0]-1][coords[1]-1] = " "
+            table[coords[0]-1][coords[1]-1] = "|"
             return True
         elif way == "down" and coords[0] + 2 < 19 and table[coords[0] + 2][coords[1] - 1] != "|" and table[coords[0]+1][coords[1]-1]== "+":
             table[coords[0]][coords[1] - 1] = "|"
             table[coords[0] + 2][coords[1] - 1] = "|"
-            table[coords[0]+1][coords[1]-1] = " "
+            table[coords[0]+1][coords[1]-1] = "|"
             return True
 
         return False
@@ -276,12 +286,12 @@ def add_wall(coords, dir, way) -> bool:
         if way == "right" and coords[1] + 2 < 19 and table[coords[0] - 1][coords[1] + 2] != "-" and table[coords[0]-1][coords[1]+1] == "+":
             table[coords[0] - 1][coords[1]] = "-" 
             table[coords[0] - 1][coords[1] + 2] = "-"
-            table[coords[0]-1][coords[1]+1] = " "
+            table[coords[0]-1][coords[1]+1] = "-"
             return True
         elif way == "left" and coords[1] - 2 >= 0 and table[coords[0] - 1][coords[1] - 2] != "-" and table[coords[0]-1][coords[1]-1] == "+":
             table[coords[0] - 1][coords[1]] = "-"
             table[coords[0] - 1][coords[1] - 2] = "-"
-            table[coords[0]-1][coords[1]-1] = " "
+            table[coords[0]-1][coords[1]-1] = "-"
             return True
 
         return False
@@ -293,12 +303,12 @@ def add_wall(coords, dir, way) -> bool:
         if way == "right" and coords[1] + 2 < 19 and table[coords[0] + 1][coords[1] + 2] != "-" and table[coords[0]+1][coords[1]+1] == "+":
             table[coords[0] + 1][coords[1]] = "-"
             table[coords[0] + 1][coords[1] + 2] = "-"
-            table[coords[0]+1][coords[1]+1] = " "
+            table[coords[0]+1][coords[1]+1] = "-"
             return True
         elif way == "left" and coords[1] - 2 >= 0 and table[coords[0] + 1][coords[1] - 2] != "-" and table[coords[0]+1][coords[1]-1] == "+":
             table[coords[0] + 1][coords[1]] = "-"
             table[coords[0] + 1][coords[1] - 2] = "-"
-            table[coords[0]+1][coords[1]-1] = " "
+            table[coords[0]+1][coords[1]-1] = "-"
             return True
 
         return False
