@@ -1,35 +1,44 @@
 import msvcrt
 import os
-#*************** SALEH IN DICTIONARY RO BAYAD UPDATE KONI ****************************
-data ={
-    "player1_name": "Saeed",
-    "player2_name": "Saleh",
-    "player1_loc" : [2,10],
-    "player2_loc" : [4,8],
-    "obstacles_loc" : [[1,5],[3,5],[2,9]],
-    "turn" : "player1",
-    "time_spent" : 0,
-    "game_result_for_player1": None,
-    "end_game_date" : None,
-    "Game_ID" : 1234,
-    "turn" : 0
-}
-#**************************************************************************************
+
+
 
 players = ["A","B"]
 
 a_coords = [1, 9]
 b_coords = [17, 9]
+
 a_name = "A"
 b_name = "B"
+
 a_walls = 11
 b_walls = 11
 
+ended = False
 empty = "#"
 
 turn = 0
 
 table = []
+
+winner = None
+
+game_id = 0
+
+
+def generate_info():
+    data ={
+    "player1_name": players[0],
+    "player2_name": players[1],
+    "player1_loc" : a_coords,
+    "player2_loc" : b_coords,
+    "table" : table,
+    "turn" : turn,
+    "winner": winner,
+    "Game_ID" : game_id
+    }
+    return data
+
 
 
 def change_turn ():
@@ -317,8 +326,7 @@ def remove_wall(coords, dir, way):
             elif way == "left" and coords[1] - 2 >= 0:
                 table[coords[0] + 1][coords[1] - 2] = " "
 
-    
-initiate_table()
+
 
 def choose(options):
     idx = 0
@@ -398,12 +406,6 @@ def check_wall(coords,dir,way):
     return False
 
 
-    
-
-
-
-ended = False
-
 def move_menu():
     global ended
     while True:
@@ -476,17 +478,50 @@ def wall_menu():
             warn("Wall Not Valid")
 
 
-while not ended:
-    options = ["Move","Wall"]
-    choice = choose(options)
-    if choice == 0:
-        move_menu()
-    elif choice ==1 :
-        wall_menu()
+def read_data(data):
+    global players,a_coords,b_coords,a_name,b_name,a_walls,b_walls,turn,table,winner,game_id
+
+    players = [data["player1_name"],data["player2_name"]]
+    a_coords = data["player1_loc"]
+    b_coords = data["player2_loc"]
+
+    a_name = players[0].upper()[0]
+    b_name = players[1].upper()[0]
+
+    table = data["table"]
+    turn = data["turn"]
+
+    data["Game_ID"] = game_id
+
+
+
+
+
+
+def Play():
+    global winner
+    while not ended:
+        options = ["Move","Wall","Exit"]
+        choice = choose(options)
+        if choice == 0:
+            move_menu()
+        elif choice ==1 :
+            wall_menu()
+        else:
+            return
 
             
-print(f"{players[turn]} Won!")
-getch()
+    winner = players[turn]
+
+def start(data):
+    read_data(data)
+    if not table:
+        initiate_table()
+    
+    Play()
+    return generate_info()
+    
+
 
 
 
