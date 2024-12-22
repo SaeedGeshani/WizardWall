@@ -2,6 +2,7 @@ import os
 import json
 import re
 import SaveandDisplayData
+import game
 
 def check_email(email):
     """Check if the email is valid using regex."""
@@ -26,6 +27,8 @@ def sign_up():
     os.system("cls")
     print("\n=== Sign Up ===")
     username = input("Enter a username: ").strip()
+    if username == "@":
+        return None
     if os.path.exists(f"UserInformation/{username}.json"):
         print("Username already exists. Please log in.")
         return None
@@ -59,6 +62,8 @@ def log_in():
     os.system("cls")
     print("\n=== Log In ===")
     username = input("Enter your username: ").strip()
+    if username == '@':
+        return None
     user_data = load_user_data(username)
     if not user_data:
         print("Username not found. Please sign up.")
@@ -119,12 +124,13 @@ def get_second_player(first_player):
             print(f"Opponent {username} has been successfully signed up.")
             return opponent_data
 
-def create_game_history_file(player1, player2):
+def create_game_history_file(data):
     """Create a game history file for the match."""
     os.system("cls")
     folder_name = "game_history"
     os.makedirs(folder_name, exist_ok=True)
-
+    player1 = data["player1_name"]
+    player2 = data["player2_name"]
     base_filename = f"{player1}_vs_{player2}"
     filename = base_filename
     counter = 1
@@ -133,8 +139,9 @@ def create_game_history_file(player1, player2):
         counter += 1
 
     filepath = os.path.join(folder_name, f"{filename}.json")
+    essentialData = {}
     with open(filepath, "w") as file:
-        json.dump({}, file)
+        json.dump(essentialData, file)
     print(f"Game history file created: {filepath}")
     return filepath
 
@@ -150,16 +157,17 @@ def ParhamToSaeed(data1,data2):
     "player2_total_wins" : data2['total_wins'],
     "player1_total_losses" : data1["total_losses"],
     "player2_total_losses" : data2["total_losses"],
-    "play_time" : data1['playtime'],
-    "player1_loc" : [],
-    "player2_loc" : [],
+    "play_time" : data1['play_time'],
+    "player1_loc" : [1,9],
+    "player2_loc" : [17,9],
     "number_of_obs1":10,
     "number_if_obs2":10,
     "obstacles_loc" : [],
     "turn" : 0,
     "game_result_for_player1": None,
     "end_game_date" : None,
-    "Game_ID" : 1234
+    "Game_ID" : 1234,
+    "table" : []
     }
     return total_data
 
@@ -197,17 +205,16 @@ def new_game(first_player):
     print(f"Player 2: {second_player_data['username']}")
 
     total_data = ParhamToSaeed(first_player_data, second_player_data)
-    #******
-    # LOGIC
-    #******
-
-    first_player_data, second_player_data = SaeedToParham(total_data)
-
-    # Create game history file
-    create_game_history_file(first_player_data['username'], second_player_data['username'])
+    total_data = game.start(total_data)
+    if total_data != None:
+        first_player_data, second_player_data = SaeedToParham(total_data)
+        create_game_history_file(first_player_data)
+    else:
+        with open("table.json") as file:
+            json.dump(total_data)
 
     # Placeholder for game logic
-    # return first_player_data, second_player_data
+    return first_player_data, second_player_data
 
 def view_game_history():
     """View the history of all games played."""

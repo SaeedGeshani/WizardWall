@@ -1,7 +1,17 @@
 import msvcrt
 import os
 from datetime import datetime
+UNUSEDDATA = {
 
+    "player1_email" : "",
+    "player2_email" : "",
+    "player1_password" : "",
+    "player2_password" : "",
+    "player1_total_wins" : 0,
+    "player2_total_wins" : 0,
+    "player1_total_losses" : 0,
+    "player2_total_losses" : 0
+}
 
 players = ["A","B"]
 
@@ -38,7 +48,17 @@ def generate_info():
     "turn" : turn,
     "winner": winner,
     "Game_ID" : game_id,
-    "time_spent" : time_spent
+    "play_time" : time_spent,
+
+    "player1_email" : UNUSEDDATA["player1_email"],
+    "player2_email" : UNUSEDDATA["player2_email"],
+    "player1_password" : UNUSEDDATA["player1_password"],
+    "player2_password" : UNUSEDDATA["player2_password"],
+    "player1_total_wins" : UNUSEDDATA['player1_total_wins'],
+    'player1_total_losses' : UNUSEDDATA['player1_total_losses'],
+    "player2_total_wins" : UNUSEDDATA['player2_total_wins'],
+    'player2_total_losses' : UNUSEDDATA['player2_total_losses']
+
     }
     return data
 
@@ -496,7 +516,17 @@ def read_data(data):
 
     data["Game_ID"] = game_id
     
-    time_spent = data["time_spent"]
+    time_spent = data["play_time"]
+
+    UNUSEDDATA["player1_email"] = data['player1_email']
+    UNUSEDDATA['player2_email'] = data['player2_email']
+    UNUSEDDATA['player1_password'] = data['player1_password']
+    UNUSEDDATA['player2_password'] = data['player2_password']
+    UNUSEDDATA['player1_total_wins'] = data['player1_total_wins']
+    UNUSEDDATA['player2_total_wins'] = data['player2_total_wins']
+    UNUSEDDATA['player1_total_losses'] = data['player1_total_losses']
+    UNUSEDDATA['player2_total_losses'] = data['player2_total_losses']
+    
     
 
 
@@ -528,7 +558,7 @@ def time_difference(start_time):
 
 def start(data):
     global time_spent
-    # read_data(data)
+    read_data(data)
     start_time = datetime.now().time()
     if not table:
         initiate_table()
@@ -539,7 +569,6 @@ def start(data):
     return generate_info()
     
 
-start([])
 
 
 
