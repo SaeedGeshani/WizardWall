@@ -1,6 +1,6 @@
 import msvcrt
 import os
-
+from datetime import datetime
 
 
 players = ["A","B"]
@@ -25,6 +25,8 @@ winner = None
 
 game_id = 0
 
+time_spent = 0
+
 
 def generate_info():
     data ={
@@ -35,7 +37,8 @@ def generate_info():
     "table" : table,
     "turn" : turn,
     "winner": winner,
-    "Game_ID" : game_id
+    "Game_ID" : game_id,
+    "time_spent" : time_spent
     }
     return data
 
@@ -479,7 +482,7 @@ def wall_menu():
 
 
 def read_data(data):
-    global players,a_coords,b_coords,a_name,b_name,a_walls,b_walls,turn,table,winner,game_id
+    global players,a_coords,b_coords,a_name,b_name,a_walls,b_walls,turn,table,winner,game_id,time_spent
 
     players = [data["player1_name"],data["player2_name"]]
     a_coords = data["player1_loc"]
@@ -492,7 +495,9 @@ def read_data(data):
     turn = data["turn"]
 
     data["Game_ID"] = game_id
-
+    
+    time_spent = data["time_spent"]
+    
 
 
 
@@ -513,11 +518,26 @@ def Play():
             
     winner = players[turn]
 
+def time_difference():
+    pass
+
+def time_difference(start_time):
+    current_time = datetime.now().time()
+    start_seconds = start_time.hour * 3600 + start_time.minute * 60 + start_time.second
+    current_seconds = current_time.hour * 3600 + current_time.minute * 60 + current_time.second
+    if current_seconds < start_seconds:
+        current_seconds += 24 * 3600
+    return current_seconds - start_seconds
+
 def start(data):
+    global time_spent
     read_data(data)
+    start_time = datetime.now().time()
     if not table:
         initiate_table()
-    
+
+    time_spent += time_difference(start_time)
+
     Play()
     return generate_info()
     
