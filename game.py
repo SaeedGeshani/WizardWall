@@ -169,16 +169,10 @@ def move(way) -> bool | None:
                 return False
     elif way == "Up-Left":
         try:
-            if (table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] - 1] != "|") or \
-                (table[coords[0]][coords[1] - 1] != "|" and table[coords[0] - 1][coords[1]-2] != "-"):
-                if table[coords[0] - 2][coords[1] - 2] == empty:
-                    final_coords = [coords[0]-2,coords[1]-2]
-                elif (table[coords[0] - 3][coords[1]-2] != "-" and  table[coords[0]-4][coords[1] - 3] != "|") or \
-                    (table[coords[0]-2][coords[1] - 3] != "|" and table[coords[0] - 3][coords[1]-4] != "-"):
-                    final_coords = [coords[0]-4,coords[1]-4]
+            if table[coords[0]-2][coords[1]] !=  empty and table[coords[0]-3][coords[1]] == "-" and \
+                table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] - 1] != "|":
+                final_coords = [coords[0]-2,coords[1]-2]      
         except:
-                print("fuck")
-                input()
                 if turn == 1:
                     return None
                 else:
@@ -186,13 +180,9 @@ def move(way) -> bool | None:
 
     elif way == "Up-Right":
         try:
-            if (table[coords[0] - 1][coords[1]] != "-" and table[coords[0] - 2][coords[1] + 1] != "|") or \
-               (table[coords[0]][coords[1] + 1] != "|" and table[coords[0] - 1][coords[1] + 2] != "-"):
-                if table[coords[0] - 2][coords[1] + 2] == empty:
-                    final_coords = [coords[0] - 2, coords[1] + 2]
-                elif (table[coords[0] - 3][coords[1] + 2] != "-" and table[coords[0] - 4][coords[1] + 3] != "|") or \
-                     (table[coords[0] - 2][coords[1] + 3] != "|" and table[coords[0] - 3][coords[1] + 4] != "-"):
-                    final_coords = [coords[0] - 4, coords[1] + 4]
+            if table[coords[0]-2][coords[1]] !=  empty and table[coords[0]-3][coords[1]] == "-" and \
+                table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] + 1] != "|":
+                final_coords = [coords[0]-2,coords[1]+2] 
         except:
             if turn == 1:
                 return None
@@ -200,13 +190,9 @@ def move(way) -> bool | None:
                 return False
     elif way == "Down-Left":
         try:
-            if (table[coords[0] + 1][coords[1]] != "-" and table[coords[0] + 2][coords[1] - 1] != "|") or \
-               (table[coords[0]][coords[1] - 1] != "|" and table[coords[0] + 1][coords[1] - 2] != "-"):
-                if table[coords[0] + 2][coords[1] - 2] == empty:
-                    final_coords = [coords[0] + 2, coords[1] - 2]
-                elif (table[coords[0] + 3][coords[1] - 2] != "-" and table[coords[0] + 4][coords[1] - 3] != "|") or \
-                     (table[coords[0] + 2][coords[1] - 3] != "|" and table[coords[0] + 3][coords[1] - 4] != "-"):
-                    final_coords = [coords[0] + 4, coords[1] - 4]
+            if table[coords[0]+2][coords[1]] !=  empty and table[coords[0]+3][coords[1]] == "-" and \
+                table[coords[0] + 1][coords[1]] != "-" and  table[coords[0]+2][coords[1] - 1] != "|":
+                final_coords = [coords[0]+2,coords[1]-2] 
         except:
             if turn == 0:
                 return None
@@ -215,13 +201,9 @@ def move(way) -> bool | None:
             
     elif way == "Down-Right":
         try:
-            if (table[coords[0] + 1][coords[1]] != "-" and table[coords[0] + 2][coords[1] + 1] != "|") or \
-               (table[coords[0]][coords[1] + 1] != "|" and table[coords[0] + 1][coords[1] + 2] != "-"):
-                if table[coords[0] + 2][coords[1] + 2] == empty:
-                    final_coords = [coords[0] + 2, coords[1] + 2]
-                elif (table[coords[0] + 3][coords[1] + 2] != "-" and table[coords[0] + 4][coords[1] + 3] != "|") or \
-                     (table[coords[0] + 2][coords[1] + 3] != "|" and table[coords[0] + 3][coords[1] + 4] != "-"):
-                    final_coords = [coords[0] + 4, coords[1] + 4]
+            if table[coords[0]+2][coords[1]] !=  empty and table[coords[0]+3][coords[1]] == "-" and \
+                table[coords[0] + 1][coords[1]] != "-" and  table[coords[0]+2][coords[1] + 1] != "|":
+                final_coords = [coords[0]+2,coords[1]+2] 
         except:
             if turn == 0:
                 return None
