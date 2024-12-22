@@ -239,13 +239,15 @@ def add_wall(coords, dir, way) -> bool:
         if coords[1] + 1 >= 19 or table[coords[0]][coords[1] + 1] == "|":
             return False
 
-        if way == "up" and coords[0] - 2 >= 0 and table[coords[0] - 2][coords[1] + 1] != "|":
+        if way == "up" and coords[0] - 2 >= 0 and table[coords[0] - 2][coords[1] + 1] != "|" and table[coords[0]-1][coords[1]+1] == "+":
             table[coords[0]][coords[1] + 1] = "|"
             table[coords[0] - 2][coords[1] + 1] = "|"
+            table[coords[0]-1][coords[1]+1] = " "
             return True
-        elif way == "down" and coords[0] + 2 < 19 and table[coords[0] + 2][coords[1] + 1] != "|":
+        elif way == "down" and coords[0] + 2 < 19 and table[coords[0] + 2][coords[1] + 1] != "|" and table[coords[0]+1][coords[1]+1] == "+":
             table[coords[0]][coords[1] + 1] = "|"
             table[coords[0] + 2][coords[1] + 1] = "|"
+            table[coords[0]+1][coords[1]+1] = " "
             return True
 
         return False
@@ -254,13 +256,15 @@ def add_wall(coords, dir, way) -> bool:
         if coords[1] - 1 < 0 or table[coords[0]][coords[1] - 1] == "|":
             return False
 
-        if way == "up" and coords[0] - 2 >= 0 and table[coords[0] - 2][coords[1] - 1] != "|":
+        if way == "up" and coords[0] - 2 >= 0 and table[coords[0] - 2][coords[1] - 1] != "|" and table[coords[0]-1][coords[1]-1]== "+":
             table[coords[0]][coords[1] - 1] = "|"
             table[coords[0] - 2][coords[1] - 1] = "|"
+            table[coords[0]-1][coords[1]-1] = " "
             return True
-        elif way == "down" and coords[0] + 2 < 19 and table[coords[0] + 2][coords[1] - 1] != "|":
+        elif way == "down" and coords[0] + 2 < 19 and table[coords[0] + 2][coords[1] - 1] != "|" and table[coords[0]+1][coords[1]-1]== "+":
             table[coords[0]][coords[1] - 1] = "|"
             table[coords[0] + 2][coords[1] - 1] = "|"
+            table[coords[0]+1][coords[1]-1] = " "
             return True
 
         return False
@@ -269,13 +273,15 @@ def add_wall(coords, dir, way) -> bool:
         if coords[0] - 1 < 0 or table[coords[0] - 1][coords[1]] == "-":
             return False
 
-        if way == "right" and coords[1] + 2 < 19 and table[coords[0] - 1][coords[1] + 2] != "-":
-            table[coords[0] - 1][coords[1]] = "-"
+        if way == "right" and coords[1] + 2 < 19 and table[coords[0] - 1][coords[1] + 2] != "-" and table[coords[0]-1][coords[1]+1] == "+":
+            table[coords[0] - 1][coords[1]] = "-" 
             table[coords[0] - 1][coords[1] + 2] = "-"
+            table[coords[0]-1][coords[1]+1] = " "
             return True
-        elif way == "left" and coords[1] - 2 >= 0 and table[coords[0] - 1][coords[1] - 2] != "-":
+        elif way == "left" and coords[1] - 2 >= 0 and table[coords[0] - 1][coords[1] - 2] != "-" and table[coords[0]-1][coords[1]-1] == "+":
             table[coords[0] - 1][coords[1]] = "-"
             table[coords[0] - 1][coords[1] - 2] = "-"
+            table[coords[0]-1][coords[1]-1] = " "
             return True
 
         return False
@@ -284,13 +290,15 @@ def add_wall(coords, dir, way) -> bool:
         if coords[0] + 1 >= 19 or table[coords[0] + 1][coords[1]] == "-":
             return False
 
-        if way == "right" and coords[1] + 2 < 19 and table[coords[0] + 1][coords[1] + 2] != "-":
+        if way == "right" and coords[1] + 2 < 19 and table[coords[0] + 1][coords[1] + 2] != "-" and table[coords[0]+1][coords[1]+1] == "+":
             table[coords[0] + 1][coords[1]] = "-"
             table[coords[0] + 1][coords[1] + 2] = "-"
+            table[coords[0]+1][coords[1]+1] = " "
             return True
-        elif way == "left" and coords[1] - 2 >= 0 and table[coords[0] + 1][coords[1] - 2] != "-":
+        elif way == "left" and coords[1] - 2 >= 0 and table[coords[0] + 1][coords[1] - 2] != "-" and table[coords[0]+1][coords[1]-1] == "+":
             table[coords[0] + 1][coords[1]] = "-"
             table[coords[0] + 1][coords[1] - 2] = "-"
+            table[coords[0]+1][coords[1]-1] = " "
             return True
 
         return False
@@ -518,9 +526,6 @@ def Play():
             
     winner = players[turn]
 
-def time_difference():
-    pass
-
 def time_difference(start_time):
     current_time = datetime.now().time()
     start_seconds = start_time.hour * 3600 + start_time.minute * 60 + start_time.second
@@ -531,7 +536,7 @@ def time_difference(start_time):
 
 def start(data):
     global time_spent
-    read_data(data)
+    # read_data(data)
     start_time = datetime.now().time()
     if not table:
         initiate_table()
@@ -541,6 +546,8 @@ def start(data):
     Play()
     return generate_info()
     
+
+start([])
 
 
 
