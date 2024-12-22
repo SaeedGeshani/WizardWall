@@ -528,18 +528,16 @@ def time_difference(start_time):
 
 def start(data):
     global time_spent
-    # read_data(data)
-    start_time = datetime.now().time()
+    read_data(data)
     if not table:
         initiate_table()
 
+    start_time = datetime.now().time()
     time_spent += time_difference(start_time)
 
     Play()
     return generate_info()
     
-
-start([])
 
 
 
