@@ -1,12 +1,21 @@
-data ={
-    "player1_name": "Saeed",
-    "player2_name": "Parham",
-    "player1_loc" : [2,10],
-    "player2_loc" : [4,8],
-    "obstacles_loc" : [[1,5],[3,5],[2,9]],
-    "turn" : "player1",
-    "time_spent" : 0,
+total_data = {
+    "player1_name": "",
+    "player1_email": "",
+    "player2_email": "",
+    "player1_password" : "",
+    "player2_password" : "",
+    "player1_total_wins" : 0,
+    "player2_total_wins" : 0,
+    "player1_total_losses" : 0,
+    "player2_total_losses" : 0,
+    "play_time" : 0,
+    "player1_loc" : [],
+    "player2_loc" : [],
+    "number_of_obs1":10,
+    "number_if_obs2":10,
+    "obstacles_loc" : [],
+    "turn" : 0,
     "game_result_for_player1": None,
     "end_game_date" : None,
     "Game_ID" : 1234
-}
+    }
