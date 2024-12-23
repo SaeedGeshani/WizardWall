@@ -482,6 +482,9 @@ def read_data(data):
     a_name = players[0].upper()[0]
     b_name = players[1].upper()[0]
 
+    if a_name == b_name:
+        b_name = b_name.lower()
+
     table = data["table"]
     turn = data["turn"]
 
