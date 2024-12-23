@@ -534,13 +534,12 @@ def start(data):
         initiate_table()
 
     start_time = datetime.now().time()
-    time_spent += time_difference(start_time)
-
     Play()
+    time_spent += time_difference(start_time)
     return generate_info()
     
 
-start([])
+# start([])
 
 
 
