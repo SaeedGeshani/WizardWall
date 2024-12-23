@@ -129,8 +129,8 @@ def create_game_history_file(data):
     os.system("cls")
     folder_name = "game_history"
     os.makedirs(folder_name, exist_ok=True)
-    player1 = data["player1_name"]
-    player2 = data["player2_name"]
+    player1 = data['username']
+    player2 = data["username"]
     base_filename = f"{player1}_vs_{player2}"
     filename = base_filename
     counter = 1
@@ -164,7 +164,7 @@ def ParhamToSaeed(data1,data2):
     "number_if_obs2":10,
     "obstacles_loc" : [],
     "turn" : 0,
-    "game_result_for_player1": None,
+    "winner": None,
     "end_game_date" : None,
     "Game_ID" : 1234,
     "table" : []
@@ -206,12 +206,12 @@ def new_game(first_player):
 
     total_data = ParhamToSaeed(first_player_data, second_player_data)
     total_data = game.start(total_data)
-    if total_data != None:
+    if total_data['winner'] != None:   #ETMAM GAME
         first_player_data, second_player_data = SaeedToParham(total_data)
         create_game_history_file(first_player_data)
     else:
-        with open("table.json") as file:
-            json.dump(total_data)
+        with open("table.json" , 'w') as file:
+            json.dump(total_data, file)
 
     # Placeholder for game logic
     return first_player_data, second_player_data
