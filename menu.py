@@ -202,61 +202,55 @@ def new_game(first_player):
     second_player_data = get_second_player(first_player)
     print("\nNew game starting between:")
     print(f"Player 1: {first_player_data['username']}")
-    print(f"Player 2: {second_player_data['username']}")
+    print(f"Player 2: {second_player_data['username']}\n")
 
     total_data = ParhamToSaeed(first_player_data, second_player_data)
     total_data = game.start(total_data)
-    if total_data['winner'] != None:   #ETMAM GAME
+
+    if total_data['winner'] is not None:  # Game finished
+        # Update winner and loser statistics
+        winner_username = total_data['winner']
+        loser_username = (first_player_data['username'] if winner_username == second_player_data['username'] else second_player_data['username'])
+
+        # Update play_time for both players
+        first_player_data['play_time'] += total_data['play_time']
+        second_player_data['play_time'] += total_data['play_time']
+
+        # Save updated play_time
+        save_user_data(first_player_data['username'], first_player_data)
+        save_user_data(second_player_data['username'], second_player_data)
+
+        # Load and update winner's data
+        winner_data = load_user_data(winner_username)
+        if winner_data:
+            winner_data['total_wins'] += 1
+            save_user_data(winner_username, winner_data)
+
+        # Load and update loser's data
+        loser_data = load_user_data(loser_username)
+        if loser_data:
+            loser_data['total_losses'] += 1
+            save_user_data(loser_username, loser_data)
+
         first_player_data, second_player_data = SaeedToParham(total_data)
         create_game_history_file(first_player_data)
     else:
-        with open("table.json" , 'w') as file:
+        with open("table.json", 'w') as file:
             json.dump(total_data, file)
 
-    # Placeholder for game logic
     return first_player_data, second_player_data
 
-def view_game_history():
-    """View the history of all games played."""
-    os.system("cls")
-    folder_name = "game_history"
-    if not os.path.exists(folder_name):
-        print("No matches have been played yet.")
-        input("Press any key to move forward...")
-        return
-
-    game_files = [f for f in os.listdir(folder_name) if f.endswith('.json')]
-    if not game_files:
-        print("No matches have been played yet.")
-        input("Press any key to move forward...")
-        return
-
-    print("\n=== Game History ===")
-    for index, game_file in enumerate(game_files, start=1):
-        print(f"{index}. {game_file.replace('_', ' ').replace('.json', '')}")
-
-    try:
-        choice = int(input("Select a game to view (by number): "))
-        if 1 <= choice <= len(game_files):
-            selected_file = game_files[choice - 1]
-            print(f"Selected game: {selected_file}")
-            # Placeholder for viewing game content
-        else:
-            print("Invalid selection.")
-    except ValueError:
-        print("Invalid input. Please enter a number.")
-    input("Press any key to move forward...")
 
 def view_leaderboard():
     """View the leaderboard."""
     os.system("cls")
     print("\n=== Leaderboard ===")
-    json_files = [f for f in os.listdir('.') if f.endswith('.json')]
+    json_files = [f for f in os.listdir('UserInformation') if f.endswith('.json')]
     players = []
 
     for file in json_files:
         try:
-            with open(file, 'r') as f:
+            with open(f"UserInformation/{file}", 'r') as f:
                 data = json.load(f)
                 if "username" in data and "total_wins" in data and "play_time" in data and "total_losses" in data:
                     players.append(data)
@@ -277,18 +271,18 @@ def view_leaderboard():
     input("Press any key to move forward...")
 
 def loadSection(username):
-    dic = {'names' : []}
+    dic = {'names': []}
     path = f"Games/UniqueNames.json"
     if os.path.exists(path):
         with open(path, 'r') as file:
-            dic = json.load(path)
+            dic = json.load(file)
     if username in dic["names"]:
-        dic = {'names' : []}
+        dic = {'names': []}
         path = f"Games/{username}/opponents.json"
         if os.path.exists(path):
             with open(path, 'r') as file:
                 dic = json.load(file)
-        
+
         if len(dic['names']) == 0:
             print("You don't have any saved game")
         else:
@@ -296,21 +290,22 @@ def loadSection(username):
                 print(name)
             oponame = input("Enter your opponent's name: ").strip()
             path = f"Games/{username}/{oponame}/allGames.json"
-            dic = {'games' : []}
+            dic = {'games': []}
             if os.path.exists(path):
                 with open(path, 'r') as file:
                     dic = json.load(file)
-            
+
             for i, gameName in enumerate(dic['games']):
                 print(f"{i}.{gameName}")
-            
+
             gameID = input("Enter ID of your game: ").strip()
 
             path = f"Games/{username}/{oponame}/{gameID}.json"
-            
-            Table , data = SaveandDisplayData.loadGameData(path)
 
-            #************************************************ PASS THIS TO SALEH's LOGIC FUNCTION***********************************************************************************************************************************************************
+            Table, data = SaveandDisplayData.loadGameData(path)
+            
+#************************************************ PASS THIS TO SALEH's LOGIC FUNCTION***************************************************************************************************************
+            
             total_data = {}
 
             first_player_data, second_player_data = SaeedToParham(total_data)
@@ -323,21 +318,18 @@ def main_menu(username):
         os.system("cls")
         print("\n=== Main Menu ===")
         print("1. New Game")
-        print("2. View Leaderboard")
-        print("3. View Game History")
-        print("4.Load a game")
-        print("5. Exit")
+        print("2. Load Game")
+        print("3. View Leaderboard")
+        print("4. Exit")
         choice = input("Choose an option: ").strip()
 
         if choice == "1":
             new_game(username)
         elif choice == "2":
-            view_leaderboard()
+            loadSection(username)
         elif choice == "3":
-            view_game_history()
-        elif choice == '4':
-            loadSection()
-        elif choice == "5":
+            view_leaderboard()
+        elif choice == "4":
             print("Exiting the program. Goodbye!")
             return
         else:
