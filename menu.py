@@ -3,7 +3,15 @@ import json
 import re
 import SaveandDisplayData
 import game
-
+import os
+import json
+import re
+from rich.console import Console
+from rich.table import Table
+from rich.prompt import Prompt
+from rich.panel import Panel
+from rich import print
+console = Console()
 def check_email(email):
     """Check if the email is valid using regex."""
     pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
@@ -24,26 +32,26 @@ def save_user_data(username, data):
 
 def sign_up():
     """Sign up a new user."""
-    os.system("cls")
-    print("\n=== Sign Up ===")
-    username = input("Enter a username: ").strip()
+    console.clear()
+    console.print(Panel("[bold green]Sign Up[/bold green]", expand=False))
+    username = Prompt.ask("Enter a username")
     if username == "@":
         return None
     if os.path.exists(f"UserInformation/{username}.json"):
-        print("Username already exists. Please log in.")
+        console.print("[red]Username already exists. Please log in.[/red]")
         return None
 
-    email = input("Enter your email: ").strip()
+    email = Prompt.ask("Enter your email")
     if not check_email(email):
-        print("Invalid email format. Please try again.")
+        console.print("[red]Invalid email format. Please try again.[/red]")
         return None
 
-    password = input("Enter a password: ").strip()
+    password = Prompt.ask("Enter a password", password=True)
     while True:
-        confirm_password = input("Confirm your password: ").strip()
+        confirm_password = Prompt.ask("Confirm your password", password=True)
         if password == confirm_password:
             break
-        print("Passwords do not match. Please try again.")
+        console.print("[red]Passwords do not match. Please try again.[/red]")
 
     user_data = {
         "username": username,
@@ -54,29 +62,29 @@ def sign_up():
         "total_losses": 0
     }
     save_user_data(username, user_data)
-    print("Account created successfully! You can now log in.")
+    console.print("[green]Account created successfully! You can now log in.[/green]")
     return username
 
 def log_in():
     """Log in an existing user."""
-    os.system("cls")
-    print("\n=== Log In ===")
-    username = input("Enter your username: ").strip()
+    console.clear()
+    console.print(Panel("[bold green]Log In[/bold green]", expand=False))
+    username = Prompt.ask("Enter your username")
     if username == '@':
         return None
     user_data = load_user_data(username)
     if not user_data:
-        print("Username not found. Please sign up.")
+        console.print("[red]Username not found. Please sign up.[/red]")
         return None
 
     for _ in range(3):
-        password = input("Enter your password: ").strip()
+        password = Prompt.ask("Enter your password", password=True)
         if password == user_data["password"]:
-            print("Login successful!")
+            console.print("[green]Login successful![/green]")
             return username
-        print("Incorrect password. Please try again.")
+        console.print("[red]Incorrect password. Please try again.[/red]")
 
-    print("Too many failed attempts. Please try again later.")
+    console.print("[red]Too many failed attempts. Please try again later.[/red]")
     return None
 
 def get_second_player(first_player):
@@ -257,8 +265,8 @@ def new_game(first_player):
 
 def view_leaderboard():
     """View the leaderboard."""
-    os.system("cls")
-    print("\n=== Leaderboard ===")
+    console.clear()
+    console.print(Panel("[bold green]Leaderboard[/bold green]", expand=False))
     json_files = [f for f in os.listdir('UserInformation') if f.endswith('.json')]
     players = []
 
@@ -272,9 +280,30 @@ def view_leaderboard():
             continue
 
     if not players:
-        print("No users found.")
-        input("Press any key to move forward...")
+        console.print("[red]No users found.[/red]")
+        Prompt.ask("Press any key to move forward...")
         return
+
+    players.sort(key=lambda x: (-x["total_wins"], x["play_time"], x["total_losses"]))
+
+    table = Table(title="Leaderboard")
+    table.add_column("Rank", justify="right", style="cyan", no_wrap=True)
+    table.add_column("Username", style="magenta")
+    table.add_column("Wins", justify="right", style="green")
+    table.add_column("Play Time", justify="right", style="blue")
+    table.add_column("Losses", justify="right", style="red")
+
+    for rank, player in enumerate(players, start=1):
+        table.add_row(
+            str(rank),
+            player['username'],
+            str(player['total_wins']),
+            str(player['play_time']),
+            str(player['total_losses'])
+        )
+
+    console.print(table)
+    Prompt.ask("Press any key to move forward...")
 
     players.sort(key=lambda x: (-x["total_wins"], x["play_time"], x["total_losses"]))
 
@@ -392,13 +421,19 @@ def loadSection(username):
 def main_menu(username):
     """Display the main menu after login or signup."""
     while True:
-        os.system("cls")
-        print("\n=== Main Menu ===")
-        print("1. New Game")
-        print("2. Load Game")
-        print("3. View Leaderboard")
-        print("4. Exit")
-        choice = input("Choose an option: ").strip()
+        console.clear()
+        console.print(Panel(f"[bold green]Main Menu - Logged in as {username}[/bold green]", expand=False))
+        options = {
+            "1": "New Game",
+            "2": "Load Game",
+            "3": "View Leaderboard",
+            "4": "Exit"
+        }
+
+        for key, value in options.items():
+            console.print(f"[bold cyan]{key}.[/bold cyan] {value}")
+
+        choice = Prompt.ask("Choose an option")
 
         if choice == "1":
             new_game(username)
@@ -407,20 +442,27 @@ def main_menu(username):
         elif choice == "3":
             view_leaderboard()
         elif choice == "4":
-            print("Exiting the program. Goodbye!")
+            console.print("[green]Exiting the program. Goodbye![/green]")
             return
         else:
-            print("Invalid choice. Please try again.")
+            console.print("[red]Invalid choice. Please try again.[/red]")
 
 def main():
     """Main function to run the program."""
-    print("Welcome to Coridor!")
+    console.print(Panel("[bold green]Welcome to Coridor![/bold green]", expand=False))
     while True:
-        os.system("cls")
-        print("\n1. Sign Up")
-        print("2. Log In")
-        print("3. Exit")
-        choice = input("Choose an option: ").strip()
+        console.clear()
+        console.print(Panel("[bold green]Coridor Game[/bold green]", expand=False))
+        options = {
+            "1": "Sign Up",
+            "2": "Log In",
+            "3": "Exit"
+        }
+
+        for key, value in options.items():
+            console.print(f"[bold cyan]{key}.[/bold cyan] {value}")
+
+        choice = Prompt.ask("Choose an option")
 
         if choice == "1":
             username = sign_up()
@@ -431,10 +473,10 @@ def main():
             if username:
                 main_menu(username)
         elif choice == "3":
-            print("Goodbye!")
+            console.print("[green]Goodbye![/green]")
             return
         else:
-            print("Invalid choice. Please try again.")
+            console.print("[red]Invalid choice. Please try again.[/red]")
 
 if __name__ == "__main__":
     main()
