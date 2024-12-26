@@ -488,8 +488,7 @@ def read_data(data):
     table = data["table"]
     turn = data["turn"]
 
-    data["Game_ID"] = game_id
-    
+    game_id = data["Game_ID"]
     time_spent = data["play_time"]
 
     UNUSEDDATA["player1_email"] = data['player1_email']

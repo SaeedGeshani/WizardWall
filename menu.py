@@ -203,8 +203,23 @@ def new_game(first_player):
     print("\nNew game starting between:")
     print(f"Player 1: {first_player_data['username']}")
     print(f"Player 2: {second_player_data['username']}\n")
+    os.system("cls")
+
+    while True:
+        user_input = input("Please enter a unique gameID:")
+        path = f"Games/{first_player_data['username']}/{second_player_data['username']}/allGames.json"
+        dic = {"games" : []}
+        if os.path.exists(path):
+            with open(path, 'r') as file:
+                dic = json.load(file)
+        
+        if user_input not in dic['games']:
+            gameID = user_input
+            break
+        
 
     total_data = ParhamToSaeed(first_player_data, second_player_data)
+    total_data["Game_ID"] = gameID
     total_data = game.start(total_data)
 
     if total_data['winner'] is not None:  # Game finished
@@ -235,8 +250,7 @@ def new_game(first_player):
         first_player_data, second_player_data = SaeedToParham(total_data)
         create_game_history_file(first_player_data)
     else:
-        with open("table.json", 'w') as file:
-            json.dump(total_data, file)
+        SaveandDisplayData.saveTotalGame(total_data)
 
     return first_player_data, second_player_data
 
@@ -283,12 +297,15 @@ def loadSection(username):
             with open(path, 'r') as file:
                 dic = json.load(file)
 
-        if len(dic['names']) == 0:
+        if len(dic['opponents']) == 0:
             print("You don't have any saved game")
+            return
         else:
-            for name in dic['names']:
+            for name in dic['opponents']:
                 print(name)
             oponame = input("Enter your opponent's name: ").strip()
+            first_player_data = load_user_data(username)
+            second_player_data = get_second_player(username)
             path = f"Games/{username}/{oponame}/allGames.json"
             dic = {'games': []}
             if os.path.exists(path):
@@ -296,21 +313,81 @@ def loadSection(username):
                     dic = json.load(file)
 
             for i, gameName in enumerate(dic['games']):
-                print(f"{i}.{gameName}")
+                print(f"{i+1}_{gameName}")
 
             gameID = input("Enter ID of your game: ").strip()
 
             path = f"Games/{username}/{oponame}/{gameID}.json"
+            if os.path.exists(path):
+                data = SaveandDisplayData.loadGameData(path)
+                total_data = {}
+                total_data = game.start(data)
+                if total_data['winner'] is not None:  # Game finished
+                    # Update winner and loser statistics
+                    winner_username = total_data['winner']
+                    loser_username = (first_player_data['username'] if winner_username == second_player_data['username'] else second_player_data['username'])
 
-            Table, data = SaveandDisplayData.loadGameData(path)
+                    # Update play_time for both players
+                    first_player_data['play_time'] += total_data['play_time']
+                    second_player_data['play_time'] += total_data['play_time']
+
+                    # Save updated play_time
+                    save_user_data(first_player_data['username'], first_player_data)
+                    save_user_data(second_player_data['username'], second_player_data)
+
+                    # Load and update winner's data
+                    winner_data = load_user_data(winner_username)
+                    if winner_data:
+                        winner_data['total_wins'] += 1
+                        save_user_data(winner_username, winner_data)
+
+                    # Load and update loser's data
+                    loser_data = load_user_data(loser_username)
+                    if loser_data:
+                        loser_data['total_losses'] += 1
+                        save_user_data(loser_username, loser_data)
+
+                    dic = {"games": []}
+                    path = f"Games/{first_player_data['username']}/{second_player_data['username']}/allGames.json"
+                    if os.path.exists(path):
+                        with open(path, 'r') as file:
+                            dic = json.load(file)
+
+                    if total_data["Game_ID"] in dic["games"]:
+                        dic["games"].remove(total_data["Game_ID"])
+                        with open(path, 'w') as file:
+                            json.dump(dic, file)
+                        os.remove(f"Games/{first_player_data['username']}/{second_player_data['username']}/{total_data["Game_ID"]}.json")
+
+                
+
+
+                    dic = {"games": []}
+                    path = f"Games/{second_player_data['username']}/{first_player_data['username']}/allGames.json"
+                    if os.path.exists(path):
+                        with open(path, 'r') as file:
+                            dic = json.load(file)
+
+                    if total_data["Game_ID"] in dic["games"]:
+                        dic["games"].remove(total_data["Game_ID"])
+                        with open(path, 'w') as file:
+                            json.dump(dic, file)
+                        os.remove(f"Games/{second_player_data['username']}/{first_player_data['username']}/{total_data["Game_ID"]}.json")
+
+                
             
+
+                    first_player_data, second_player_data = SaeedToParham(total_data)
+                    create_game_history_file(first_player_data)
+                else:
+                    SaveandDisplayData.saveTotalGame(total_data)
+            else:
+                print("sorry Couldn't load data please try again")
 #************************************************ PASS THIS TO SALEH's LOGIC FUNCTION***************************************************************************************************************
             
-            total_data = {}
 
-            first_player_data, second_player_data = SaeedToParham(total_data)
-            create_game_history_file(first_player_data, second_player_data)
-
+            
+            
 
 def main_menu(username):
     """Display the main menu after login or signup."""

@@ -116,13 +116,4 @@ def loadGameData(fileName: str) -> list:
     except:
         print("There isn't anything to load")
     if len(data) > 0:
-        Table = [['#' if i % 2 == 0 else '' for i in range(17)] if j % 2 == 0 else ["" for _ in range(17)] for j in range(17)]
-        for i in range(17):
-            for j in range(17):
-                if [i, j] in data["obstacles_loc"]:
-                    Table[i][j] = "$"
-                elif [i, j] == data["player1_loc"]:
-                    Table[i][j] = "1"
-                elif [i, j] == data["player2_loc"]:
-                    Table[i][j] = "2"
-        return [Table, data]
+        return  data
