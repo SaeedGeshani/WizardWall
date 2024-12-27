@@ -178,22 +178,30 @@ def move(way) -> bool | None:
             elif table[coords[0] + 3][coords[1]] != "-":
                 final_coords = [coords[0]+4,coords[1]]
     elif way == "Up-Left":
-        if table[coords[0]-2][coords[1]] !=  empty and table[coords[0]-3][coords[1]] == "-" and \
-            table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] - 1] != "|":
+        if (table[coords[0]-2][coords[1]] !=  empty and table[coords[0]-3][coords[1]] == "-" and \
+            table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] - 1] != "|") or \
+            (table[coords[0]][coords[1]-2] !=  empty and table[coords[0]][coords[1]-3] == "|" and \
+            table[coords[0]][coords[1]-1] != "|" and  table[coords[0]-1][coords[1] - 2] != "-"):
             final_coords = [coords[0]-2,coords[1]-2]      
 
     elif way == "Up-Right":
-        if table[coords[0]-2][coords[1]] !=  empty and table[coords[0]-3][coords[1]] == "-" and \
-            table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] + 1] != "|":
+        if (table[coords[0]-2][coords[1]] !=  empty and table[coords[0]-3][coords[1]] == "-" and \
+            table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] + 1] != "|") or \
+            (table[coords[0]][coords[1]+2] !=  empty and table[coords[0]][coords[1]+3] == "|" and \
+            table[coords[0]][coords[1]+1] != "|" and  table[coords[0] -1][coords[1] +2] != "-"):
             final_coords = [coords[0]-2,coords[1]+2] 
     elif way == "Down-Left":
-        if table[coords[0]+2][coords[1]] !=  empty and table[coords[0]+3][coords[1]] == "-" and \
-            table[coords[0] + 1][coords[1]] != "-" and  table[coords[0]+2][coords[1] - 1] != "|":
+        if (table[coords[0]+2][coords[1]] !=  empty and table[coords[0]+3][coords[1]] == "-" and \
+            table[coords[0] + 1][coords[1]] != "-" and  table[coords[0]+2][coords[1] - 1] != "|") or \
+            (table[coords[0]][coords[1]-2] !=  empty and table[coords[0]][coords[1]-3] == "|" and \
+            table[coords[0]][coords[1]-1] != "|" and  table[coords[0]+1][coords[1] - 2] != "-"):
             final_coords = [coords[0]+2,coords[1]-2] 
             
     elif way == "Down-Right":
-        if table[coords[0]+2][coords[1]] !=  empty and table[coords[0]+3][coords[1]] == "-" and \
-            table[coords[0] + 1][coords[1]] != "-" and  table[coords[0]+2][coords[1] + 1] != "|":
+        if (table[coords[0]+2][coords[1]] !=  empty and table[coords[0]+3][coords[1]] == "-" and \
+            table[coords[0] + 1][coords[1]] != "-" and  table[coords[0]+2][coords[1] + 1] != "|") or \
+            (table[coords[0]][coords[1]+2] !=  empty and table[coords[0]][coords[1]+3] == "|" and \
+            table[coords[0]][coords[1]+1] != "|" and  table[coords[0]+1][coords[1] + 2] != "_"):
             final_coords = [coords[0]+2,coords[1]+2] 
 
 
