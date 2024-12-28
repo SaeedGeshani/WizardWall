@@ -149,61 +149,71 @@ def print_table():
     
     print(f"Walls: \033[34m{a_walls}\033[0m        \033[31m{b_walls}\033[0m")
 
+
 def move(way) -> bool | None:
     coords = a_coords if turn == 0 else b_coords
-    final_coords = [coords[0],coords[1]]
+    final_coords = [coords[0], coords[1]]
     name = a_name if turn == 0 else b_name
+
+    def is_within_bounds(r, c):
+        return 0 <= r < len(table) and 0 <= c < len(table[0])
+
     if way == "Right":
-        if table[coords[0]][coords[1] + 1] != "|":
-            if table[coords[0]][coords[1] + 2] == empty:
-                final_coords = [coords[0],coords[1]+2]
-            elif table[coords[0]][coords[1] + 3] != "|":
-                final_coords = [coords[0],coords[1]+4]
+        if is_within_bounds(coords[0], coords[1] + 1) and table[coords[0]][coords[1] + 1] != "|":
+            if is_within_bounds(coords[0], coords[1] + 2) and table[coords[0]][coords[1] + 2] == empty:
+                final_coords = [coords[0], coords[1] + 2]
+            elif is_within_bounds(coords[0], coords[1] + 3) and table[coords[0]][coords[1] + 3] != "|":
+                final_coords = [coords[0], coords[1] + 4]
     elif way == "Up":
-        if table[coords[0] - 1][coords[1]] != "-":
-            if table[coords[0] - 2][coords[1]] == empty:
-                final_coords = [coords[0]-2,coords[1]]
-            elif table[coords[0] - 3][coords[1]] != "-":
-                final_coords = [coords[0]-4,coords[1]]
+        if is_within_bounds(coords[0] - 1, coords[1]) and table[coords[0] - 1][coords[1]] != "-":
+            if is_within_bounds(coords[0] - 2, coords[1]) and table[coords[0] - 2][coords[1]] == empty:
+                final_coords = [coords[0] - 2, coords[1]]
+            elif is_within_bounds(coords[0] - 3, coords[1]) and table[coords[0] - 3][coords[1]] != "-":
+                final_coords = [coords[0] - 4, coords[1]]
     elif way == "Left":
-        if table[coords[0]][coords[1] - 1] != "|":
-            if table[coords[0]][coords[1] - 2] == empty:
-                final_coords = [coords[0],coords[1]-2]
-            elif table[coords[0]][coords[1] - 3] != "|":
-                final_coords = [coords[0],coords[1]-4]
+        if is_within_bounds(coords[0], coords[1] - 1) and table[coords[0]][coords[1] - 1] != "|":
+            if is_within_bounds(coords[0], coords[1] - 2) and table[coords[0]][coords[1] - 2] == empty:
+                final_coords = [coords[0], coords[1] - 2]
+            elif is_within_bounds(coords[0], coords[1] - 3) and table[coords[0]][coords[1] - 3] != "|":
+                final_coords = [coords[0], coords[1] - 4]
     elif way == "Down":
-        if table[coords[0] + 1][coords[1]] != "-":
-            if table[coords[0] + 2][coords[1]] == empty:
-                final_coords = [coords[0]+2,coords[1]]
-            elif table[coords[0] + 3][coords[1]] != "-":
-                final_coords = [coords[0]+4,coords[1]]
+        if is_within_bounds(coords[0] + 1, coords[1]) and table[coords[0] + 1][coords[1]] != "-":
+            if is_within_bounds(coords[0] + 2, coords[1]) and table[coords[0] + 2][coords[1]] == empty:
+                final_coords = [coords[0] + 2, coords[1]]
+            elif is_within_bounds(coords[0] + 3, coords[1]) and table[coords[0] + 3][coords[1]] != "-":
+                final_coords = [coords[0] + 4, coords[1]]
     elif way == "Up-Left":
-        if (table[coords[0]-2][coords[1]] !=  empty and table[coords[0]-3][coords[1]] == "-" and \
-            table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] - 1] != "|") or \
-            (table[coords[0]][coords[1]-2] !=  empty and table[coords[0]][coords[1]-3] == "|" and \
-            table[coords[0]][coords[1]-1] != "|" and  table[coords[0]-1][coords[1] - 2] != "-"):
-            final_coords = [coords[0]-2,coords[1]-2]      
-
+        if is_within_bounds(coords[0] - 2, coords[1] - 2) and (
+            (table[coords[0] - 2][coords[1]] != empty and table[coords[0] - 3][coords[1]] == "-" and
+             table[coords[0] - 1][coords[1]] != "-" and table[coords[0] - 2][coords[1] - 1] != "|") or
+            (table[coords[0]][coords[1] - 2] != empty and table[coords[0]][coords[1] - 3] == "|" and
+             table[coords[0]][coords[1] - 1] != "|" and table[coords[0] - 1][coords[1] - 2] != "-")
+        ):
+            final_coords = [coords[0] - 2, coords[1] - 2]
     elif way == "Up-Right":
-        if (table[coords[0]-2][coords[1]] !=  empty and table[coords[0]-3][coords[1]] == "-" and \
-            table[coords[0] - 1][coords[1]] != "-" and  table[coords[0]-2][coords[1] + 1] != "|") or \
-            (table[coords[0]][coords[1]+2] !=  empty and table[coords[0]][coords[1]+3] == "|" and \
-            table[coords[0]][coords[1]+1] != "|" and  table[coords[0] -1][coords[1] +2] != "-"):
-            final_coords = [coords[0]-2,coords[1]+2] 
+        if is_within_bounds(coords[0] - 2, coords[1] + 2) and (
+            (table[coords[0] - 2][coords[1]] != empty and table[coords[0] - 3][coords[1]] == "-" and
+             table[coords[0] - 1][coords[1]] != "-" and table[coords[0] - 2][coords[1] + 1] != "|") or
+            (table[coords[0]][coords[1] + 2] != empty and table[coords[0]][coords[1] + 3] == "|" and
+             table[coords[0]][coords[1] + 1] != "|" and table[coords[0] - 1][coords[1] + 2] != "-")
+        ):
+            final_coords = [coords[0] - 2, coords[1] + 2]
     elif way == "Down-Left":
-        if (table[coords[0]+2][coords[1]] !=  empty and table[coords[0]+3][coords[1]] == "-" and \
-            table[coords[0] + 1][coords[1]] != "-" and  table[coords[0]+2][coords[1] - 1] != "|") or \
-            (table[coords[0]][coords[1]-2] !=  empty and table[coords[0]][coords[1]-3] == "|" and \
-            table[coords[0]][coords[1]-1] != "|" and  table[coords[0]+1][coords[1] - 2] != "-"):
-            final_coords = [coords[0]+2,coords[1]-2] 
-            
+        if is_within_bounds(coords[0] + 2, coords[1] - 2) and (
+            (table[coords[0] + 2][coords[1]] != empty and table[coords[0] + 3][coords[1]] == "-" and
+             table[coords[0] + 1][coords[1]] != "-" and table[coords[0] + 2][coords[1] - 1] != "|") or
+            (table[coords[0]][coords[1] - 2] != empty and table[coords[0]][coords[1] - 3] == "|" and
+             table[coords[0]][coords[1] - 1] != "|" and table[coords[0] + 1][coords[1] - 2] != "-")
+        ):
+            final_coords = [coords[0] + 2, coords[1] - 2]
     elif way == "Down-Right":
-        if (table[coords[0]+2][coords[1]] !=  empty and table[coords[0]+3][coords[1]] == "-" and \
-            table[coords[0] + 1][coords[1]] != "-" and  table[coords[0]+2][coords[1] + 1] != "|") or \
-            (table[coords[0]][coords[1]+2] !=  empty and table[coords[0]][coords[1]+3] == "|" and \
-            table[coords[0]][coords[1]+1] != "|" and  table[coords[0]+1][coords[1] + 2] != "_"):
-            final_coords = [coords[0]+2,coords[1]+2] 
-
+        if is_within_bounds(coords[0] + 2, coords[1] + 2) and (
+            (table[coords[0] + 2][coords[1]] != empty and table[coords[0] + 3][coords[1]] == "-" and
+             table[coords[0] + 1][coords[1]] != "-" and table[coords[0] + 2][coords[1] + 1] != "|") or
+            (table[coords[0]][coords[1] + 2] != empty and table[coords[0]][coords[1] + 3] == "|" and
+             table[coords[0]][coords[1] + 1] != "|" and table[coords[0] + 1][coords[1] + 2] != "-")
+        ):
+            final_coords = [coords[0] + 2, coords[1] + 2]
 
     if (final_coords[0] == 1 and turn == 1) or (final_coords[0] == 17 and turn == 0):
         return None
@@ -214,7 +224,7 @@ def move(way) -> bool | None:
         return True
     else:
         return False
-    
+ 
 
 def add_wall(coords, dir, way) -> bool: 
     coords = [coords[0]*2 -1,coords[1]*2-1]
@@ -539,7 +549,7 @@ def time_difference(start_time):
 
 def start(data):
     global time_spent
-    read_data(data)
+    # read_data(data)
     if not table:
         initiate_table()
 
@@ -549,7 +559,7 @@ def start(data):
     return generate_info()
     
 
-# start([])
+start([])
 
 
 
