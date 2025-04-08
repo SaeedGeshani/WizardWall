@@ -1,7 +1,7 @@
 
 ---
 
-### **4. WizardWall Game User System (Python)**  
+### **WizardWall Game User System (Python)**  
 **Repository:** [WizardWall-UserSystem-Py](https://github.com/SaeedGeshani/WizardWall)  
 
 ```markdown
